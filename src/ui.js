@@ -45,6 +45,12 @@ function handlePluginMessage(event) {
         updateUI();
         clearForm();
     }
+    else if (message && message.type === 'open-link') { 
+        const url = message.url;
+        if (url) {
+            window.open(url, '_blank');
+        }
+    }
 }
 
 // Toggle form visibility
@@ -236,12 +242,8 @@ function attachTodoEventListeners() {
             e.preventDefault();
             const url = link.dataset.url;
             if (url) {
-                if (url.includes('figma.com')) {
-                    copyToClipboard(url);
-                    console.log('Comment link copied to clipboard');
-                } else {
-                    window.open(url, '_blank');
-                }
+                // Send message to plugin to open the link
+                parent.postMessage({pluginMessage: {type: 'open-link', url}}, '*');
             }
         });
     });

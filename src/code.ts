@@ -123,8 +123,22 @@ class TodoListPlugin {
       case 'clear-all-todos':
         this.clearAllTodos();
         break;
+      case 'open-link':
+        this.openLink(message.url);
+        break;
       default:
         console.warn('Unknown message type:', message.type);
+    }
+  }
+
+  private openLink(url: string): void {
+    if (typeof url === 'string' && url.startsWith('https://www.figma.com')) {
+      figma.openExternal(url);
+    } else if (typeof url === 'string') { 
+      figma.ui.postMessage({
+        type: 'open-link',
+        url: url
+      });
     }
   }
 

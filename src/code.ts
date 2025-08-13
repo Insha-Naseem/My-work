@@ -159,11 +159,10 @@ class TodoListPlugin {
   }
 
   private async deleteTodo(id: string): Promise<void> {
-    var filtered = this.data.todos.filter(todo => todo.id !== id);
-    // await this.saveData();
-    // this.sendDataToUI();
-    // figma.notify('Todo deleted');
-    console.log('[ts] foiltered todos:', filtered);
+    this.data.todos = this.data.todos.filter(todo => todo.id !== id);
+    await this.saveData();
+    this.sendDataToUI();
+    figma.notify('Todo deleted');
   }
 
   private async toggleTodoComplete(id: string): Promise<void> {

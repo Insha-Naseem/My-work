@@ -42,7 +42,6 @@ function handlePluginMessage(event) {
     const message = event.data.pluginMessage;
     if (message && message.type === 'data-update') {
         currentData = message.data;
-
         updateUI();
         clearForm();
     }
@@ -150,14 +149,18 @@ function updateTodoCount() {
 function renderTodos() {
     const todosSection = document.getElementById('todosSection');
     const emptyState = document.getElementById('emptyState');
+    console.log('[js] Rendering todos:', currentData.todos);
 
     if (currentData.todos.length === 0) {
-        emptyState.style.display = 'block';
-        todosSection.innerHTML = emptyState.outerHTML;
+        todosSection.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">📋</div>
+                <div class="empty-state-text">No todos yet<br>Add your first todo above!</div>
+            </div>
+        `;
         return;
     }
 
-    emptyState.style.display = 'none';
     const todosHTML = currentData.todos.map(todo => createTodoHTML(todo)).join('');
     todosSection.innerHTML = todosHTML;
     attachTodoEventListeners();

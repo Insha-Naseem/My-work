@@ -202,36 +202,46 @@ function createTodoHTML(todo) {
     const timestamp = formatTimestamp(todo.createdAt);
 
     if (editingTodoId === todo.id) {
-        // Render edit form for this todo
+        // Render improved edit form for this todo
         return `
-        <div class="todo-item editing ${completedClass}" data-id="${todo.id}">
-            <div class="todo-header">
-                <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} disabled>
-                <div class="todo-content">
-                    <input class="form-input edit-description" value="${escapeHtml(todo.description)}" placeholder="Description">
-                    <div class="todo-meta">
+        <div class="todo-item editing ${completedClass}" data-id="${todo.id}" style="padding: 16px 16px 12px 16px;">
+            <form class="edit-todo-form" autocomplete="off" onsubmit="return false;">
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label class="form-label">Description</label>
+                    <input class="form-input edit-description" value="${escapeHtml(todo.description)}" placeholder="Description" style="margin-bottom: 0;">
+                </div>
+                <div class="form-row" style="gap: 8px; margin-bottom: 12px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Priority</label>
                         <select class="form-input edit-priority">
-                            <option value="next-phase" ${todo.priority === 'next-phase' ? 'selected' : ''}>Next Phase</option>
-                            <option value="developer-urgent" ${todo.priority === 'developer-urgent' ? 'selected' : ''}>Developer Urgent</option>
-                            <option value="1-2-days" ${todo.priority === '1-2-days' ? 'selected' : ''}>1-2 Days</option>
                             <option value="normal" ${todo.priority === 'normal' ? 'selected' : ''}>Normal</option>
+                            <option value="1-2-days" ${todo.priority === '1-2-days' ? 'selected' : ''}>1-2 Days</option>
+                            <option value="developer-urgent" ${todo.priority === 'developer-urgent' ? 'selected' : ''}>Developer Urgent</option>
+                            <option value="next-phase" ${todo.priority === 'next-phase' ? 'selected' : ''}>Next Phase</option>
                         </select>
                     </div>
-                    <div class="todo-meta">
-                        <input class="form-input edit-link" value="${escapeHtml(todo.commentLink || todo.customNote || '')}" placeholder="Comment Link or Custom Note">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Type</label>
                         <select class="form-input edit-link-type">
                             <option value="comment" ${todo.commentLink ? 'selected' : ''}>Comment Link</option>
                             <option value="custom" ${todo.customNote ? 'selected' : ''}>Custom Note</option>
                         </select>
                     </div>
-                    <div class="todo-meta">
-                        <input class="form-input edit-attachment" value="${todo.attachment ? escapeHtml(todo.attachment.url) : ''}" placeholder="Attachment URL (optional)">
-                    </div>
-                    <div class="timestamp">${timestamp}</div>
                 </div>
-            </div>
-            <button class="todo-save" data-id="${todo.id}">Save</button>
-            <button class="todo-cancel" data-id="${todo.id}">Cancel</button>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label class="form-label">${todo.commentLink ? 'Comment Link' : 'Custom Note'}</label>
+                    <input class="form-input edit-link" value="${escapeHtml(todo.commentLink || todo.customNote || '')}" placeholder="Paste Figma comment URL or custom note">
+                </div>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label class="form-label">Attachment (Optional)</label>
+                    <input class="form-input edit-attachment" value="${todo.attachment ? escapeHtml(todo.attachment.url) : ''}" placeholder="Image URL or web link">
+                </div>
+                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                    <button class="todo-save" data-id="${todo.id}">Save</button>
+                    <button class="todo-cancel" data-id="${todo.id}">Cancel</button>
+                </div>
+                <div class="timestamp" style="margin-top: 8px;">${timestamp}</div>
+            </form>
         </div>
         `;
     }

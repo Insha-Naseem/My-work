@@ -247,10 +247,11 @@ function createTodoHTML(todo) {
     }
 
     let linkHTML = '';
+    let noteHTML = '';
     if (todo.commentLink) {
         linkHTML = `<a class="todo-link" href="#" data-url="${todo.commentLink}">🔗 Comment Link</a>`;
     } else if (todo.customNote) {
-        linkHTML = `<span class="todo-note">📝 ${escapeHtml(todo.customNote)}</span>`;
+        noteHTML = `<span class="todo-note">📝 ${escapeHtml(todo.customNote)}</span>`;
     }
 
     let attachmentHTML = '';
@@ -274,6 +275,7 @@ function createTodoHTML(todo) {
                         <span class="priority-badge priority-${todo.priority}">${priorityConfig.label}</span>
                         ${linkHTML}
                     </div>
+                    ${noteHTML}
                     ${attachmentHTML}
                     <div class="timestamp">${timestamp}</div>
                 </div>

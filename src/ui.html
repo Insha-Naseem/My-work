@@ -329,6 +329,59 @@
         .todos-section::-webkit-scrollbar-thumb:hover {
             background: #a8a8a8;
         }
+
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            padding: 8px 16px 0 16px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e5e5e5;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: auto;
+            scrollbar-color: #c1c1c1 #f1f1f1;
+            -webkit-overflow-scrolling: touch;
+            flex-shrink: 0;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .filter-bar::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .filter-bar::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 2px;
+        }
+
+        .filter-bar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 2px;
+        }
+
+        .filter-btn {
+            padding: 2px 10px;
+            border: none;
+            border-radius: 16px;
+            background: #e5e5e5;
+            color: #333;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            font-weight: 500;
+            white-space: nowrap;
+            height: 28px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            box-shadow: none;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: #667eea;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -340,6 +393,14 @@
         </div>
         
         <div class="content">
+            <!-- Add filter bar here -->
+            <div class="filter-bar" id="filterBar">
+                <button class="filter-btn active" data-priority="all">All</button>
+                <button class="filter-btn" data-priority="next-phase">Next Phase</button>
+                <button class="filter-btn" data-priority="developer-urgent">Developer Urgent</button>
+                <button class="filter-btn" data-priority="1-2-days">1-2 Days</button>
+                <button class="filter-btn" data-priority="normal">Normal</button>
+            </div>
             <div class="form-section" id="formSection">
                 <div class="form-group">
                     <label class="form-label">Description</label>

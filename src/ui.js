@@ -13,11 +13,14 @@ const PRIORITY_CONFIG = {
     'normal': {color: '#70a1ff', label: 'Normal'}
 };
 
+let currentFilter = 'all';
+
 // Initialize the UI
 function init() {
     console.log('[js] Initializing UIX');
     parent.postMessage({pluginMessage: 'anything here'}, '*')
     setupEventListeners();
+    setupFilterBar();
     updateUI();
     parent.postMessage({pluginMessage: {type: 'get-data'}}, '*');
 }
@@ -143,6 +146,18 @@ function updateUI() {
     renderTodos();
 }
 
+// Set up filter bar
+function setupFilterBar() {
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentFilter = btn.dataset.priority;
+            renderTodos();
+        });
+    });
+}
+
 // Update todo count
 function updateTodoCount() {
     const total = currentData.todos.length;
@@ -157,7 +172,12 @@ function renderTodos() {
     const emptyState = document.getElementById('emptyState');
     console.log('[js] Rendering todos:', currentData.todos);
 
-    if (currentData.todos.length === 0) {
+    let filteredTodos = currentData.todos;
+    if (currentFilter !== 'all') {
+        filteredTodos = currentData.todos.filter(todo => todo.priority === currentFilter);
+    }
+
+    if (filteredTodos.length === 0) {
         todosSection.innerHTML = `
             <div class="empty-state">
                 <div class="empty-state-icon">📋</div>
@@ -167,7 +187,7 @@ function renderTodos() {
         return;
     }
 
-    const todosHTML = currentData.todos.map(todo => createTodoHTML(todo)).join('');
+    const todosHTML = filteredTodos.map(todo => createTodoHTML(todo)).join('');
     todosSection.innerHTML = todosHTML;
     attachTodoEventListeners();
 }

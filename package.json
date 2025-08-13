@@ -1,0 +1,23 @@
+{
+  "name": "figma-personal-todo-list",
+  "version": "1.0.0",
+  "description": "A personal todo list plugin for Figma with comment integration",
+  "main": "code.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "dev": "npm run build && npm run watch"
+  },
+  "keywords": [
+    "figma",
+    "plugin",
+    "todo",
+    "productivity"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.82.0",
+    "typescript": "^5.0.0"
+  }
+}

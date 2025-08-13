@@ -4,8 +4,9 @@
   "description": "A personal todo list plugin for Figma with comment integration",
   "main": "code.js",
   "scripts": {
-    "build": "node deploy.js",
-    "dev": "nodemon --watch . --ext js,html --ignore dist/ --exec \"node deploy.js\""
+    "build": "tsc && node deploy.js",
+    "build:dev": "tsc && node deploy.js",
+    "dev": "nodemon --watch src --ext ts,js,html --ignore dist/ --exec \"npm run build:dev\""
   },
   "keywords": [
     "figma",

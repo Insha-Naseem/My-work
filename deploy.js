@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const htmlPath = path.join(__dirname, 'ui.html');
-const jsPath = path.join(__dirname, 'ui.js');
+const htmlPath = path.join(__dirname, './src/ui.html');
+const jsPath = path.join(__dirname, './src/ui.js');
 const outPath = path.join(__dirname, 'dist/ui.distribution.html');
 
 let html = fs.readFileSync(htmlPath, 'utf8');

@@ -23,6 +23,43 @@ function init() {
     setupFilterBar();
     updateUI();
     parent.postMessage({pluginMessage: {type: 'get-data'}}, '*');
+    setupResizeHandle();
+}
+// Setup draggable resize handle
+function setupResizeHandle() {
+    const handle = document.getElementById('resizeHandle');
+    const container = document.querySelector('.container');
+    let isResizing = false;
+    let startX, startY, startWidth, startHeight;
+
+    handle.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        isResizing = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        const rect = container.getBoundingClientRect();
+        startWidth = rect.width;
+        startHeight = rect.height;
+        document.body.style.userSelect = 'none';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        let newWidth = Math.max(240, startWidth + dx);
+        let newHeight = Math.max(200, startHeight + dy);
+        newWidth = Math.min(newWidth, 800);
+        newHeight = Math.min(newHeight, 900);
+        // Send resize message to plugin backend in real time
+        parent.postMessage({pluginMessage: {type: 'resize-window', width: Math.round(newWidth), height: Math.round(newHeight)}}, '*');
+    });
+
+    window.addEventListener('mouseup', (e) => {
+        if (!isResizing) return;
+        isResizing = false;
+        document.body.style.userSelect = '';
+    });
 }
 
 // Set up event listeners

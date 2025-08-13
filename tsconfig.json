@@ -11,7 +11,8 @@
     "rootDir": "./",
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "typeRoots": ["./node_modules/@types", "./node_modules/@figma"]
   },
   "include": ["*.ts"],
   "exclude": ["node_modules", "dist"]

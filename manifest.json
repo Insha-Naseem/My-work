@@ -3,7 +3,7 @@
   "id": "personal-todo-list-plugin",
   "api": "1.0.0",
   "main": "code.js",
-  "ui": "ui.html",
+  "ui": "dist/ui.distribution.html",
   "editorType": ["figma"],
   "networkAccess": {
     "allowedDomains": ["none"]

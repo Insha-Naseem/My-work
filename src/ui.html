@@ -176,6 +176,66 @@
             transition: all 0.2s;
             position: relative;
         }
+        .todo-item.editing {
+            box-shadow: 0 0 0 2px #667eea33;
+            background: #f4f7ff;
+        }
+        .todo-save, .todo-cancel, .todo-edit {
+            margin-left: 8px;
+            padding: 2px 10px;
+            border: none;
+            border-radius: 16px;
+            background: #e5e5e5;
+            color: #333;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            font-weight: 500;
+            white-space: nowrap;
+            height: 28px;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: none;
+        }
+        .todo-save {
+            background: #667eea;
+            color: #fff;
+        }
+        .todo-cancel {
+            background: #f1f3f4;
+            color: #333;
+        }
+        .todo-edit {
+            background: none;
+            color: #667eea;
+            margin-left: 0;
+            margin-top: 8px;
+            padding: 2px;
+            border: none;
+            box-shadow: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            height: 24px;
+            width: 24px;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+        .todo-edit:hover {
+            background: #f1f3f4;
+        }
+        .todo-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            gap: 8px;
+            z-index: 2;
+        }
 
         .todo-item:hover {
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -253,6 +313,10 @@
             font-size: 11px;
             color: #666;
             font-style: italic;
+            word-break: break-word;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            display: block;
         }
 
         .todo-attachment {
@@ -262,6 +326,15 @@
             font-size: 11px;
             color: #666;
             margin-top: 4px;
+            flex-wrap: wrap;
+        }
+        .todo-attachment .todo-link {
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: inline-block;
+            vertical-align: bottom;
         }
 
         .todo-attachment-icon {
@@ -270,9 +343,6 @@
         }
 
         .todo-delete {
-            position: absolute;
-            top: 8px;
-            right: 8px;
             background: none;
             border: none;
             color: #999;
@@ -329,17 +399,85 @@
         .todos-section::-webkit-scrollbar-thumb:hover {
             background: #a8a8a8;
         }
+
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            padding: 8px 16px 12px 16px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e5e5e5;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+            -webkit-overflow-scrolling: touch;
+            flex-shrink: 0;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .filter-bar::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        .filter-bar::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .filter-bar::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 2px;
+        }
+
+        .filter-bar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 2px;
+        }
+
+        .filter-btn {
+            padding: 2px 10px;
+            border: none;
+            border-radius: 16px;
+            background: #e5e5e5;
+            color: #333;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            font-weight: 500;
+            white-space: nowrap;
+            height: 28px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            box-shadow: none;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: #667eea;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" style="position: relative;">
         <div class="header" id="header">
             <div class="header-title">📝 Personal Todo List</div>
             <div class="header-count" id="todoCount">0</div>
             <button class="header-toggle" id="toggleBtn">−</button>
         </div>
+        <div class="resize-handle" id="resizeHandle">
+          <svg viewBox="0 0 16 16"><path d="M2 14h12M4 12h10M6 10h8" stroke="#667eea" stroke-width="2" fill="none"/></svg>
+        </div>
         
         <div class="content">
+            <!-- Add filter bar here -->
+            <div class="filter-bar" id="filterBar">
+                <button class="filter-btn active" data-priority="all">All</button>
+                <button class="filter-btn" data-priority="next-phase">Next Phase</button>
+                <button class="filter-btn" data-priority="developer-urgent">Developer Urgent</button>
+                <button class="filter-btn" data-priority="1-2-days">1-2 Days</button>
+                <button class="filter-btn" data-priority="normal">Normal</button>
+            </div>
             <div class="form-section" id="formSection">
                 <div class="form-group">
                     <label class="form-label">Description</label>
@@ -390,6 +528,28 @@
         </div>
     </div>
 
+    <style>
+      .resize-handle {
+        position: absolute;
+        right: 2px;
+        bottom: 2px;
+        width: 18px;
+        height: 18px;
+        cursor: nwse-resize;
+        z-index: 100;
+        background: none;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        pointer-events: auto;
+      }
+      .resize-handle svg {
+        width: 16px;
+        height: 16px;
+        opacity: 0.5;
+        pointer-events: none;
+      }
+    </style>
     <script src="ui.js"></script>
 </body>
 </html>

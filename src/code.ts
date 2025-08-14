@@ -71,7 +71,7 @@ class TodoListPlugin {
     try {
       const savedData = await figma.clientStorage.getAsync('todoData');
       if (savedData) {
-        this.data = { ...DEFAULT_DATA, ...savedData };
+        this.data = Object.assign({}, DEFAULT_DATA, savedData);
       }
     } catch (error) {
       console.error('Failed to load data:', error);
@@ -89,6 +89,7 @@ class TodoListPlugin {
   }
 
   private sendDataToUI(): void {
+    console.log('[ts] Sending data to UI:', this.data);
     figma.ui.postMessage({
       type: 'data-update',
       data: this.data
@@ -96,6 +97,7 @@ class TodoListPlugin {
   }
 
   private handleMessage(message: any): void {
+    console.log('[ts] Received message:', message);
     switch (message.type) {
       case 'add-todo':
         this.addTodo(message.todo);
@@ -118,17 +120,37 @@ class TodoListPlugin {
       case 'get-data':
         this.sendDataToUI();
         break;
+      case 'clear-all-todos':
+        this.clearAllTodos();
+        break;
+      case 'open-link':
+        this.openLink(message.url);
+        break;
       default:
         console.warn('Unknown message type:', message.type);
     }
   }
 
+  private openLink(url: string): void {
+    if (typeof url === 'string' && url.startsWith('https://www.figma.com')) {
+      figma.openExternal(url);
+    } else if (typeof url === 'string') { 
+      figma.ui.postMessage({
+        type: 'open-link',
+        url: url
+      });
+    }
+  }
+
   private async addTodo(todoData: Omit<TodoItem, 'id' | 'createdAt'>): Promise<void> {
-    const newTodo: TodoItem = {
-      ...todoData,
-      id: this.generateId(),
-      createdAt: Date.now()
-    };
+    const newTodo: TodoItem = Object.assign(
+      {},
+      todoData,
+      {
+        id: this.generateId(),
+        createdAt: Date.now()
+      }
+    );
 
     this.data.todos.unshift(newTodo); // Add to beginning of array
     await this.saveData();
@@ -140,7 +162,11 @@ class TodoListPlugin {
   private async updateTodo(id: string, updates: Partial<TodoItem>): Promise<void> {
     const todoIndex = this.data.todos.findIndex(todo => todo.id === id);
     if (todoIndex !== -1) {
-      this.data.todos[todoIndex] = { ...this.data.todos[todoIndex], ...updates };
+      this.data.todos[todoIndex] = Object.assign(
+        {},
+        this.data.todos[todoIndex],
+        updates
+      );
       await this.saveData();
       this.sendDataToUI();
     }
@@ -150,7 +176,6 @@ class TodoListPlugin {
     this.data.todos = this.data.todos.filter(todo => todo.id !== id);
     await this.saveData();
     this.sendDataToUI();
-    
     figma.notify('Todo deleted');
   }
 
@@ -173,6 +198,14 @@ class TodoListPlugin {
     this.data.isExpanded = !this.data.isExpanded;
     await this.saveData();
     this.sendDataToUI();
+  }
+
+  private async clearAllTodos(): Promise<void> {
+    console.log('[ts] Clearing all todos');
+    this.data.todos = [];
+    await this.saveData();
+    this.sendDataToUI();
+    figma.notify('All todos cleared');
   }
 
   private generateId(): string {
